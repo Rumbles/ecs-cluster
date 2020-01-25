@@ -1,7 +1,7 @@
 # Template the lambda script, zip it up, upload the package to the lambda for task 1
 
 data "template_file" "lambda_task_1" {
-  template = file("${path.module}/files/lambda_function.tpl")
+  template = file("${path.module}/files/lambda_function.py")
   vars = {
     cluster_name          = var.cluster_name
     placement_expression  = "attribute:ecs.availability-zone in [${join(", ", data.aws_availability_zones.available.names)}]"
@@ -55,7 +55,7 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_lambda_task_1" {
 # Template the lambda script, zip it up, upload the package to the lambda for task 2
 
 data "template_file" "lambda_task_2" {
-  template = file("${path.module}/files/lambda_function.tpl")
+  template = file("${path.module}/files/lambda_function.py")
   vars = {
     cluster_name          = var.cluster_name
     placement_expression  = "attribute:ecs.availability-zone in [${join(", ", data.aws_availability_zones.available.names)}]"

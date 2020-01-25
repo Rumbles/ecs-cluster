@@ -1,4 +1,5 @@
 import boto3
+import sys
 
 def lambda_handler(event,context):
 
@@ -11,12 +12,22 @@ def lambda_handler(event,context):
         request_params = event_details.get("requestParameters", None)
 
         if request_params:
+            print(str(request_params))
 
             repo_name = request_params.get("repositoryName")
             registry_id = request_params.get("registryId")
             image_tag = request_params.get("imageTag")
 
             ecr = boto3.client("ecr")
+
+            response = ecr.describe_images(
+                registryId=registry_id,
+                repositoryName=repo_name,
+            )
+
+            print(response)
+
+            #if response
 
             response = ecr.describe_repositories(
                 registryId=registry_id,
@@ -31,6 +42,7 @@ def lambda_handler(event,context):
     # This is here for if you run the lambda from a test event, it will just
     # publish the latest image
     if not repository_url:
+        print("Test event, publishing latest")
         repository_url = "${repository_url}:latest"
 
     response = ecs.register_task_definition(
@@ -45,7 +57,7 @@ def lambda_handler(event,context):
                 "memoryReservation": 128,
                 "portMappings": [
                     {
-                        "containerPort": "${container_port},
+                        "containerPort": ${container_port},
                         "protocol": "${container_protocol}"
                     }
                 ],
