@@ -25,19 +25,20 @@ def lambda_handler(event,context):
                 repositoryName=repo_name,
             )
 
-            print(response)
+            if len(response['imageDetails']) > 1:
 
-            #if response
+                response = ecr.describe_repositories(
+                    registryId=registry_id,
+                    repositoryNames=[
+                        repo_name,
+                    ]
+                )
 
-            response = ecr.describe_repositories(
-                registryId=registry_id,
-                repositoryNames=[
-                    repo_name,
-                ]
-            )
-
-            repo_uri = response["repositories"][0]["repositoryUri"]
-            repository_url = f"{repo_uri}:{image_tag}"
+                repo_uri = response["repositories"][0]["repositoryUri"]
+                repository_url = f"{repo_uri}:{image_tag}"
+            else:
+                print("First image, not running")
+                sys.exit(0)
 
     # This is here for if you run the lambda from a test event, it will just
     # publish the latest image
